@@ -4,6 +4,9 @@ const morgan = require("morgan");
 const colors = require("colors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
+const bodyParser = require("body-parser");
+
+
 
 //env config
 dotenv.config();
@@ -22,6 +25,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res)=>{
   res.send("server is working ");

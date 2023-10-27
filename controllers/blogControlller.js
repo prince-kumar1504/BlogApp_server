@@ -32,8 +32,11 @@ exports.getAllBlogsController = async (req, res) => {
 exports.createBlogController = async (req, res) => {
   try {
     const { title, description, image, user } = req.body;
+
+    const decodedDescription = decodeURIComponent(description);
+    // console.log(decodedDescription);
     //validation
-    if (!title || !description || !image || !user) {
+    if (!title || !decodedDescription || !image || !user) {
       return res.status(400).send({
         success: false,
         message: "Please Fill All Fields",
@@ -48,7 +51,7 @@ exports.createBlogController = async (req, res) => {
       });
     }
 
-    const newBlog = new blogModel({ title, description, image, user });
+    const newBlog = new blogModel({ title, description:decodedDescription, image, user });
     const session = await mongoose.startSession();
     session.startTransaction();
     await newBlog.save({ session });
