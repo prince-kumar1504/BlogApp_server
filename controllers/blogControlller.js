@@ -34,6 +34,7 @@ exports.createBlogController = async (req, res) => {
     const { title, description, image, user } = req.body;
 
     const decodedDescription = decodeURIComponent(description);
+    const formattedDescription = decodedDescription.replace(/\n/g, "<br>");
     // console.log(decodedDescription);
     //validation
     if (!title || !decodedDescription || !image || !user) {
