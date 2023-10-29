@@ -5,7 +5,7 @@ const userModel = require("../models/userModel");
 //GET ALL BLOGS
 exports.getAllBlogsController = async (req, res) => {
   try {
-    const blogs = await blogModel.find({}).populate("user");
+    const blogs = await blogModel.find({}).sort({ createdAt: -1 }).populate("user");
     if (!blogs) {
       return res.status(200).send({
         success: false,
@@ -33,11 +33,8 @@ exports.createBlogController = async (req, res) => {
   try {
     const { title, description, image, user } = req.body;
 
-    const decodedDescription = decodeURIComponent(description);
-    const formattedDescription = decodedDescription.replace(/\n/g, "<br>");
-    // console.log(decodedDescription);
     //validation
-    if (!title || !decodedDescription || !image || !user) {
+    if (!title || !description || !image || !user) {
       return res.status(400).send({
         success: false,
         message: "Please Fill All Fields",
@@ -52,7 +49,7 @@ exports.createBlogController = async (req, res) => {
       });
     }
 
-    const newBlog = new blogModel({ title, description:formattedDescription, image, user });
+    const newBlog = new blogModel({ title, description, image, user });
     const session = await mongoose.startSession();
     session.startTransaction();
     await newBlog.save({ session });
@@ -69,7 +66,7 @@ exports.createBlogController = async (req, res) => {
     console.log(error);
     return res.status(400).send({
       success: false,
-      message: "Error WHile Creting blog",
+      message: "Error While Creting blog",
       error,
     });
   }
@@ -104,16 +101,33 @@ exports.updateBlogController = async (req, res) => {
 exports.getBlogByIdController = async (req, res) => {
   try {
     const { id } = req.params;
-    const blog = await blogModel.findById(id);
+    const { userId } = req.query;
+    console.log(userId);
+    const blog = await blogModel.findById(id).populate("user");
+           
     if (!blog) {
       return res.status(404).send({
         success: false,
         message: "blog not found with this is",
       });
     }
+    // Check for the inc of view so that it does not icrease while author sees this post.
+    if (userId && userId === blog.user.id) {
+      return res.status(200).send({
+        success: true,
+        message: "Fetched single blog",
+        blog,
+      });
+    }
+
+    // Increment the views count by 1 whenever the API is called
+    blog.views += 1;
+    await blog.save();
+
+
     return res.status(200).send({
       success: true,
-      message: "fetch single blog",
+      message: "Fetched single blog not author",
       blog,
     });
   } catch (error) {
@@ -153,6 +167,7 @@ exports.deleteBlogController = async (req, res) => {
 exports.userBlogControlller = async (req, res) => {
   try {
     const userBlog = await userModel.findById(req.params.id).populate("blogs");
+    // userBlog.sort({ createdAt: -1 })
 
     if (!userBlog) {
       return res.status(404).send({

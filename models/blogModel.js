@@ -19,6 +19,10 @@ const blogSchema = new mongoose.Schema(
       ref: "User",
       require: [true, "user id is required"],
     },
+    views:{
+      type: Number,
+      default:0,
+    }
   },
   { timestamps: true }
 );
