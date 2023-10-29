@@ -1,7 +1,6 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
-const colors = require("colors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const bodyParser = require("body-parser");
@@ -32,8 +31,8 @@ app.get("/", (req, res)=>{
 });
 
 //routes
-app.use("/api/v1/user", userRoutes);
-app.use("/api/v1/blog", blogRoutes);
+app.use("/api/v1/user/BlogApp_frontend", userRoutes);
+app.use("/api/v1/blog/BlogApp_frontend", blogRoutes);
 
 // Port
 const PORT = process.env.PORT || 8080;
