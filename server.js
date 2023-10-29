@@ -31,8 +31,8 @@ app.get("/", (req, res)=>{
 });
 
 //routes
-app.use("/api/v1/user/BlogApp_frontend", userRoutes);
-app.use("/api/v1/blog/BlogApp_frontend", blogRoutes);
+app.use("/BlogApp_frontend/api/v1/user", userRoutes);
+app.use("/BlogApp_frontend/api/v1/blog", blogRoutes);
 
 // Port
 const PORT = process.env.PORT || 8080;
