@@ -166,7 +166,7 @@ exports.deleteBlogController = async (req, res) => {
 //GET USER BLOG
 exports.userBlogControlller = async (req, res) => {
   try {
-    const userBlog = await userModel.findById(req.params.id).populate("blogs");
+    const userBlog = await userModel.findById(req.params.id).populate({path:"blogs" , options: { sort: { createdAt: -1 } }});
     // userBlog.sort({ createdAt: -1 })
 
     if (!userBlog) {
