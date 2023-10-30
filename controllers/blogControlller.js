@@ -121,7 +121,7 @@ exports.getBlogByIdController = async (req, res) => {
     }
 
     // Increment the views count by 1 whenever the API is called
-    blog.views += 1/2;
+    blog.views += 1;
     await blog.save();
 
 
