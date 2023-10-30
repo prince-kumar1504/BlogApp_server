@@ -20,6 +20,12 @@ const userSchema = new mongoose.Schema(
         ref: "Blog",
       },
     ],
+    savedBlogs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Blog', 
+      }
+    ],
   },
   { timestamps: true }
 );

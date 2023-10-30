@@ -189,3 +189,48 @@ exports.userBlogControlller = async (req, res) => {
     });
   }
 };
+
+// save the blogs to saved 
+exports.saveBlogController = async (req, res) => {
+  const { id } = req.params;  // blog id
+    const { userId } = req.query; // user id
+
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Check if the blogId is already in the savedBlogs array
+    if (user.savedBlogs.includes(id)) {
+      return res.status(400).json({ success: false, message: 'Blog already saved' });
+    }
+
+    user.savedBlogs.push(id);
+    await user.save();
+
+    return res.status(200).json({ success: true, message: 'Blog saved successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+// get saved blogs
+
+exports.getSavedBlogsController = async (req, res) => {
+  const { id } = req.params; // user id
+
+  try {
+    const user = await userModel.findById(id).populate('savedBlogs');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const savedBlogs = user.savedBlogs;
+    return res.status(200).json({ success: true, savedBlogs });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
