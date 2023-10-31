@@ -237,10 +237,18 @@ exports.unsaveBlogController = async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
+    const blog = await blogModel.findById(id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
 
     // Remove the blogId from the savedBlogs array
     user.savedBlogs = user.savedBlogs.filter(savedBlogId => savedBlogId.toString() !== id.toString());
     await user.save();
+
+     // Remove the user ID from the savedBy array
+     blog.savedBy = blog.savedBy.filter(savedUserId => savedUserId.toString() !== userId.toString());
+     await blog.save();
 
     return res.status(200).json({ success: true, message: 'Blog unsaved successfully' });
   } catch (error) {
