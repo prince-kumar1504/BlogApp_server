@@ -104,7 +104,7 @@ exports.getBlogByIdController = async (req, res) => {
     const { userId } = req?.query;
     console.log(userId);
     const blog = await blogModel.findById(id).populate("user");
-           
+
     if (!blog) {
       return res.status(404).send({
         success: false,
@@ -166,7 +166,7 @@ exports.deleteBlogController = async (req, res) => {
 //GET USER BLOG
 exports.userBlogControlller = async (req, res) => {
   try {
-    const userBlog = await userModel.findById(req.params.id).populate({path:"blogs" , options: { sort: { createdAt: -1 } }});
+    const userBlog = await userModel.findById(req.params.id).populate({ path: "blogs", options: { sort: { createdAt: -1 } } });
     // userBlog.sort({ createdAt: -1 })
 
     if (!userBlog) {
@@ -193,8 +193,8 @@ exports.userBlogControlller = async (req, res) => {
 // save the blogs to saved and user id of user to saved by
 exports.saveBlogController = async (req, res) => {
   const { id } = req?.params;  // blog id
-    const  { userId } = req?.query; // user id
-   console.log(userId)
+  const { userId } = req?.query; // user id
+  console.log(userId)
   try {
     const user = await userModel.findById(userId);
     if (!user) {
@@ -211,12 +211,12 @@ exports.saveBlogController = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Blog already saved' });
     }
 
-    
+
     // Push userId to blog's savedBy array and save the blog
     blog.savedBy.push(userId);
     await blog.save();
 
- // Push blogId to user's savedBlogs array and save the user
+    // Push blogId to user's savedBlogs array and save the user
     user.savedBlogs.push(id);
     await user.save();
 
@@ -246,9 +246,9 @@ exports.unsaveBlogController = async (req, res) => {
     user.savedBlogs = user.savedBlogs.filter(savedBlogId => savedBlogId.toString() !== id.toString());
     await user.save();
 
-     // Remove the user ID from the savedBy array
-     blog.savedBy = blog.savedBy.filter(savedUserId => savedUserId.toString() !== userId.toString());
-     await blog.save();
+    // Remove the user ID from the savedBy array
+    blog.savedBy = blog.savedBy.filter(savedUserId => savedUserId.toString() !== userId.toString());
+    await blog.save();
 
     return res.status(200).json({ success: true, message: 'Blog unsaved successfully' });
   } catch (error) {
@@ -264,7 +264,10 @@ exports.getSavedBlogsController = async (req, res) => {
   const { id } = req.params; // user id
 
   try {
-    const user = await userModel.findById(id).populate('savedBlogs');
+    const user = await userModel.findById(id).populate({
+      path: 'savedBlogs',
+      populate: { path: 'user' } // Populate the 'user' field inside 'savedBlogs'
+    });
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
