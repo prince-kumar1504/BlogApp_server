@@ -100,8 +100,8 @@ exports.updateBlogController = async (req, res) => {
 //SIngle Blog
 exports.getBlogByIdController = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { userId } = req.query;
+    const { id } = req?.params;
+    const { userId } = req?.query;
     console.log(userId);
     const blog = await blogModel.findById(id).populate("user");
            
@@ -192,9 +192,9 @@ exports.userBlogControlller = async (req, res) => {
 
 // save the blogs to saved 
 exports.saveBlogController = async (req, res) => {
-  const { id } = req.params;  // blog id
-    const { userId } = req.query; // user id
-
+  const { id } = req?.params;  // blog id
+    const  { userId } = req?.query; // user id
+   console.log(userId)
   try {
     const user = await userModel.findById(userId);
     if (!user) {
@@ -215,6 +215,9 @@ exports.saveBlogController = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
+
+
 
 // get saved blogs
 

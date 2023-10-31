@@ -33,7 +33,7 @@ router.delete("/delete-blog/:id", deleteBlogController);
 router.get("/user-blog/:id", userBlogControlller);
 
 //POST || save a blog to user saved blogs
-router.post("/saved-blogs/:id", saveBlogController)
+router.post("/save-blog/:id", saveBlogController)
 
 // GET || get all the saved blogs
 router.get("/saved-blogs/:id", getSavedBlogsController)
