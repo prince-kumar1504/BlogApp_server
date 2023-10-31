@@ -8,6 +8,7 @@ const {
   userBlogControlller,
   saveBlogController,
   getSavedBlogsController,
+  unsaveBlogController,
 } = require("../controllers/blogControlller");
 
 //router object
@@ -34,6 +35,9 @@ router.get("/user-blog/:id", userBlogControlller);
 
 //POST || save a blog to user saved blogs
 router.post("/save-blog/:id", saveBlogController)
+
+// DELETE || delete the saved blog from saved array user wants to unsave
+router.delete("/unsave-blog/:id",unsaveBlogController)
 
 // GET || get all the saved blogs
 router.get("/saved-blogs/:id", getSavedBlogsController)

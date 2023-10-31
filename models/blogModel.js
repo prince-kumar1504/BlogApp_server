@@ -22,7 +22,11 @@ const blogSchema = new mongoose.Schema(
     views:{
       type: Number,
       default:0,
-    }
+    },
+    savedBy: [{
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+    }],
   },
   { timestamps: true }
 );

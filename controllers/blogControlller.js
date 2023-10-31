@@ -190,7 +190,7 @@ exports.userBlogControlller = async (req, res) => {
   }
 };
 
-// save the blogs to saved 
+// save the blogs to saved and user id of user to saved by
 exports.saveBlogController = async (req, res) => {
   const { id } = req?.params;  // blog id
     const  { userId } = req?.query; // user id
@@ -201,11 +201,22 @@ exports.saveBlogController = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+    const blog = await blogModel.findById(id);
+    if (!blog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+
     // Check if the blogId is already in the savedBlogs array
     if (user.savedBlogs.includes(id)) {
       return res.status(400).json({ success: false, message: 'Blog already saved' });
     }
 
+    
+    // Push userId to blog's savedBy array and save the blog
+    blog.savedBy.push(userId);
+    await blog.save();
+
+ // Push blogId to user's savedBlogs array and save the user
     user.savedBlogs.push(id);
     await user.save();
 
@@ -216,7 +227,27 @@ exports.saveBlogController = async (req, res) => {
   }
 };
 
+// unsave blogs from controller
+exports.unsaveBlogController = async (req, res) => {
+  const { id } = req.params;  // blog id
+  const { userId } = req.query; // user id
 
+  try {
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Remove the blogId from the savedBlogs array
+    user.savedBlogs = user.savedBlogs.filter(savedBlogId => savedBlogId.toString() !== id.toString());
+    await user.save();
+
+    return res.status(200).json({ success: true, message: 'Blog unsaved successfully' });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
 
 
 // get saved blogs
