@@ -89,7 +89,7 @@ exports.loginController = async (req, res) => {
     if (!isMatch) {
       return res.status(401).send({
         success: false,
-        message: "Invlid username or password",
+        message: "Invlid password",
       });
     }
     return res.status(200).send({
