@@ -89,7 +89,7 @@ exports.loginController = async (req, res) => {
     if (!isMatch) {
       return res.status(401).send({
         success: false,
-        message: "Invlid password",
+        message: "Invalid password",
       });
     }
     return res.status(200).send({
@@ -101,7 +101,7 @@ exports.loginController = async (req, res) => {
     console.log(error);
     return res.status(500).send({
       success: false,
-      message: "Error In Login Callcback",
+      message: "Error In Login Callback",
       error,
     });
   }
